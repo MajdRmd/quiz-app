@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      text-align: center;
+      padding: 20px;
+    }
+    .quiz-box {
+      background: white;
+      padding: 20px;
+      margin: auto;
+      width: 80%;
+      max-width: 600px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #333;
+    }
+    .question {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .question p {
+      font-weight: bold;
+    }
+    .question label {
+      display: block;
+      margin: 5px 0;
+      cursor: pointer;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .score {
+      margin-top: 20px;
+      font-size: 18px;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="quiz-box">
+    <h2 id="quizTitle">Quiz</h2>
+    <form id="quizForm"></form>
+    <button onclick="submitQuiz()">Submit</button>
+    <div id="scoreResult" class="score"></div>
+  </div>
+
+  <script>
+    const quizForm = document.getElementById("quizForm");
+    const quizTitle = localStorage.getItem("quizTitle") || "Quiz";
+    document.getElementById("quizTitle").innerText = quizTitle;
+
+    const totalQuestions = parseInt(localStorage.getItem("totalQuestions") || 0);
+    const userName = localStorage.getItem("currentUser") || "Guest";
+
+
+    for (let i = 0; i < totalQuestions; i++) {
+      const questionText = localStorage.getItem(`q${i}`);
+      const opt0 = localStorage.getItem(`q${i}opt0`);
+      const opt1 = localStorage.getItem(`q${i}opt1`);
+      const opt2 = localStorage.getItem(`q${i}opt2`);
+
+      const questionDiv = document.createElement("div");
+      questionDiv.className = "question";
+
+      const qTitle = document.createElement("p");
+      qTitle.innerText = `Q${i + 1}: ${questionText}`;
+      questionDiv.appendChild(qTitle);
+
+      [opt0, opt1, opt2].forEach((opt, j) => {
+        const label = document.createElement("label");
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = `q${i}`;
+        input.value = j;
+        label.appendChild(input);
+        label.appendChild(document.createTextNode(" " + opt));
+        questionDiv.appendChild(label);
+      });
+
+      quizForm.appendChild(questionDiv);
+    }
+
+    function submitQuiz() {
+  let correct = 0;
+
+  for (let i = 0; i < totalQuestions; i++) {
+    const correctAnswer = parseInt(localStorage.getItem(`q${i}ans`));
+    const selected = document.querySelector(`input[name="q${i}"]:checked`);
+    if (selected && parseInt(selected.value) === correctAnswer) {
+      correct++;
+    }
+  }
+
+  const score = Math.round((correct / totalQuestions) * 100);
+
+  const scoreDisplay = document.getElementById("scoreResult");
+  scoreDisplay.innerText = `You scored ${score} out of 100`;
+
+  
+  const scoreKey = `score_${userName}_${quizTitle}`;
+  localStorage.setItem(scoreKey, score);
+}
+
+  </script>
+
+</body>
+</html>
