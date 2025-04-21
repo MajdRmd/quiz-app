@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login/Register</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      padding: 30px;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    .tab-buttons {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .tab-buttons button {
+      padding: 10px 20px;
+      cursor: pointer;
+      background-color: #ddd;
+      border: none;
+      margin: 0 5px;
+    }
+
+    .tab-buttons button.active {
+      background-color: #007BFF;
+      color: white;
+    }
+
+    .tab {
+      display: none;
+      max-width: 300px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 50px;
+      border: 1px solid #ccc;
+      text-align: center;
+      
+    }
+
+    .tab.active {
+      display: block;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 8px 8px -7px;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+      background: #007BDF;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Quiz App</h2>
+
+  <div class="tab-buttons">
+    <button onclick="showTab('login')" id="loginBtn" class="active">Login</button>
+    <button onclick="showTab('register')" id="registerBtn">Register</button>
+  </div>
+
+  
+  <div id="login" class="tab active">
+    <h3>Login</h3>
+    <input id="logEmail" placeholder="Email"><br>
+    <input id="logPass" type="password" placeholder="Password"><br>
+    <button type="submit" onclick="login()">Login</button>
+  </div>
+
+  
+  <div id="register" class="tab">
+    <h3>Register</h3>
+    <input id="regEmail" placeholder="Email"><br>
+    <input id="regPass" type="password" placeholder="Password"><br>
+    <button type="submit" onclick="register()">Register</button>
+  </div>
+  <script>
+    function showTab(tab) {
+      document.getElementById('login').classList.remove('active');
+      document.getElementById('register').classList.remove('active');
+      document.getElementById(tab).classList.add('active');
+  
+      document.getElementById('loginBtn').classList.remove('active');
+      document.getElementById('registerBtn').classList.remove('active');
+      document.getElementById(tab + 'Btn').classList.add('active');
+    }
+  
+    function isValidEmail(email) {
+      return email.includes("@") && email.includes(".") && email.indexOf("@") < email.lastIndexOf(".");
+    }
+  
+    function isValidPassword(password) {
+      if (password.length < 8) return false;
+  
+      var hasCapital = false;
+      for (var i = 0; i < password.length; i++) {
+        var ch = password.charAt(i);
+        if (ch >= 'A' && ch <= 'Z') {
+          hasCapital = true;
+          break;
+        }
+      }
+  
+      return hasCapital;
+    }
+  
+    function register() {
+      var email = document.getElementById('regEmail').value;
+      var pass = document.getElementById('regPass').value;
+  
+      if (email === "" || pass === "") {
+        alert("Please fill in both fields.");
+        return;
+      }
+  
+      if (!isValidEmail(email)) {
+        alert("Please enter a valid email.");
+        return;
+      }
+  
+      if (!isValidPassword(pass)) {
+        alert("Password must be at least 8 characters and contain at least one capital letter.");
+        return;
+      }
+  
+      var userList = localStorage.getItem("users");
+      if (userList === null) {
+        userList = "";
+      }
+  
+      var userArray = userList.split(";");
+      for (var i = 0; i < userArray.length; i++) {
+        var user = userArray[i].split(",");
+        if (user[0] === email) {
+          alert("User already exists!");
+          return;
+        }
+      }
+  
+      userList += email + "," + pass + ";";
+      localStorage.setItem("users", userList);
+      alert("Registered successfully! You can now login.");
+      showTab("login");
+    }
+  
+    function login() {
+      var email = document.getElementById('logEmail').value;
+      var pass = document.getElementById('logPass').value;
+  
+      if (email === "admin@quiz.com" && pass === "admin123") {
+        location.href = "dashboard.html";
+        return;
+      }
+  
+      var userList = localStorage.getItem("users");
+      if (userList === null) {
+        alert("No users found. Please register first.");
+        return;
+      }
+  
+      var userArray = userList.split(";");
+      var found = false;
+      for (var i = 0; i < userArray.length; i++) {
+        var user = userArray[i].split(",");
+        if (user[0] === email && user[1] === pass) {
+          found = true;
+          break;
+        }
+      }
+  
+      if (found) {
+        localStorage.setItem("currentUser", email);
+        location.href = "home.html";
+      } else {
+        alert("Invalid email or password.");
+      }
+    }
+  </script>
+  
+
+</body>
+</html>
