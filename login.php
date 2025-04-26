@@ -9,11 +9,13 @@ $result = mysqli_query($conn, $sql);
 
 if ($row = mysqli_fetch_assoc($result)) {
     if (password_verify($password, $row['password'])) {
-        echo "success";
+        
+        header("Location: home.html");
+        exit();
     } else {
-        echo "wrong password";
+        echo "Wrong password.";
     }
 } else {
-    echo "no user";
+    echo "No user found.";
 }
 ?>

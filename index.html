@@ -40,7 +40,6 @@
       padding: 50px;
       border: 1px solid #ccc;
       text-align: center;
-      
     }
 
     .tab.active {
@@ -80,121 +79,34 @@
   
   <div id="login" class="tab active">
     <h3>Login</h3>
-    <input id="logEmail" placeholder="Email"><br>
-    <input id="logPass" type="password" placeholder="Password"><br>
-    <button type="submit" onclick="login()">Login</button>
+    <form action="login.php" method="POST">
+      <input name="email" placeholder="Email" required><br>
+      <input name="password" type="password" placeholder="Password" required><br>
+      <button type="submit">Login</button>
+    </form>
   </div>
 
   
   <div id="register" class="tab">
     <h3>Register</h3>
-    <input id="regEmail" placeholder="Email"><br>
-    <input id="regPass" type="password" placeholder="Password"><br>
-    <button type="submit" onclick="register()">Register</button>
+    <form action="register.php" method="POST">
+      <input name="email" placeholder="Email" required><br>
+      <input name="password" type="password" placeholder="Password" required><br>
+      <button type="submit">Register</button>
+    </form>
   </div>
+
   <script>
     function showTab(tab) {
       document.getElementById('login').classList.remove('active');
       document.getElementById('register').classList.remove('active');
       document.getElementById(tab).classList.add('active');
-  
+
       document.getElementById('loginBtn').classList.remove('active');
       document.getElementById('registerBtn').classList.remove('active');
       document.getElementById(tab + 'Btn').classList.add('active');
     }
-  
-    function isValidEmail(email) {
-      return email.includes("@") && email.includes(".") && email.indexOf("@") < email.lastIndexOf(".");
-    }
-  
-    function isValidPassword(password) {
-      if (password.length < 8) return false;
-  
-      var hasCapital = false;
-      for (var i = 0; i < password.length; i++) {
-        var ch = password.charAt(i);
-        if (ch >= 'A' && ch <= 'Z') {
-          hasCapital = true;
-          break;
-        }
-      }
-  
-      return hasCapital;
-    }
-  
-    function register() {
-      var email = document.getElementById('regEmail').value;
-      var pass = document.getElementById('regPass').value;
-  
-      if (email === "" || pass === "") {
-        alert("Please fill in both fields.");
-        return;
-      }
-  
-      if (!isValidEmail(email)) {
-        alert("Please enter a valid email.");
-        return;
-      }
-  
-      if (!isValidPassword(pass)) {
-        alert("Password must be at least 8 characters and contain at least one capital letter.");
-        return;
-      }
-  
-      var userList = localStorage.getItem("users");
-      if (userList === null) {
-        userList = "";
-      }
-  
-      var userArray = userList.split(";");
-      for (var i = 0; i < userArray.length; i++) {
-        var user = userArray[i].split(",");
-        if (user[0] === email) {
-          alert("User already exists!");
-          return;
-        }
-      }
-  
-      userList += email + "," + pass + ";";
-      localStorage.setItem("users", userList);
-      alert("Registered successfully! You can now login.");
-      showTab("login");
-    }
-  
-    function login() {
-      var email = document.getElementById('logEmail').value;
-      var pass = document.getElementById('logPass').value;
-  
-      if (email === "admin@quiz.com" && pass === "admin123") {
-        location.href = "dashboard.html";
-        return;
-      }
-  
-      var userList = localStorage.getItem("users");
-      if (userList === null) {
-        alert("No users found. Please register first.");
-        return;
-      }
-  
-      var userArray = userList.split(";");
-      var found = false;
-      for (var i = 0; i < userArray.length; i++) {
-        var user = userArray[i].split(",");
-        if (user[0] === email && user[1] === pass) {
-          found = true;
-          break;
-        }
-      }
-  
-      if (found) {
-        localStorage.setItem("currentUser", email);
-        location.href = "home.html";
-      } else {
-        alert("Invalid email or password.");
-      }
-    }
   </script>
-  
 
 </body>
 </html>
