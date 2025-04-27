@@ -10,7 +10,7 @@ $result = mysqli_query($conn, $sql);
 if ($row = mysqli_fetch_assoc($result)) {
     if (password_verify($password, $row['password'])) {
         
-        header("Location: home.html");
+        header("Location: home.php");
         exit();
     } else {
         echo "Wrong password.";
